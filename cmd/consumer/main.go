@@ -63,11 +63,28 @@ func (srp *sampleRecordProcessor) ProcessRecords(records []kcl.Record) error {
 		if srp.shouldUpdateSequence(pair) {
 			srp.largestPair = pair
 		}
+
+		// decode the actual data in the payload, and print it in the log, just for debugging purposes
+		data, err := base64.StdEncoding.DecodeString(record.Data)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Fprintf(srp.log, "record has data: %q\n", data)
+
 	}
+
+	// sync, to force any buffered data to be written to the underlying log file
+	if f, ok := srp.log.(*os.File); ok {
+		f.Sync()
+	}
+
+	// more debugging output
+	fmt.Fprintf(srp.log, "time now: %s, last checkpoint: %s\n", time.Now().Format(time.RFC3339), srp.lastCheckpoint.Format(time.RFC3339))
 	if time.Now().Sub(srp.lastCheckpoint) > srp.checkpointFreq {
 		srp.checkpointer.Checkpoint(srp.largestPair)
 		srp.lastCheckpoint = time.Now()
 	}
+
 	return nil
 }
 
