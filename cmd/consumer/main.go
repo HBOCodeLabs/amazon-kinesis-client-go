@@ -49,7 +49,7 @@ func (srp *sampleRecordProcessor) Initialize(shardID string, checkpointer kcl.Ch
 }
 
 func (srp *sampleRecordProcessor) shouldUpdateSequence(pair kcl.SequencePair) bool {
-	return srp.largestPair.IsLessThan(pair)
+	return srp.largestPair.IsLessThan(pair) || srp.largestPair.IsNil()
 }
 
 func (srp *sampleRecordProcessor) ProcessRecords(records []kcl.Record) error {
