@@ -38,6 +38,7 @@ download_jars:
 	# Download the STS jar file for supporting IAM Roles
 	ls $(JAR_DIR)/aws-java-sdk-core-*.jar | sed -e "s/.*-sdk-core-//g" | sed -e "s/\.jar//g" > /tmp/version.txt
 	curl -o $(JAR_DIR)/aws-java-sdk-sts-`cat /tmp/version.txt`.jar http://central.maven.org/maven2/com/amazonaws/aws-java-sdk-sts/`cat /tmp/version.txt`/aws-java-sdk-sts-`cat /tmp/version.txt`.jar
+	echo $(JAR_DIR)
 	rm -r $(TMP_DIR)
 
 all: test build
